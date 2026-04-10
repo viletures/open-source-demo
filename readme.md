@@ -54,7 +54,7 @@ Check the **Issues** tab in this repository. Tasks are generally categorized as:
 
 ### 2. Setup Locally
 
-```bash
+
 # Clone the repository
 git clone https://github.com/motion-u/laptop-marketplace-demo.git
 
