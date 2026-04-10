@@ -7,36 +7,47 @@ const laptops = [
     { id: 6, brand: "Acer", model: "Swift 3", price: 600 }
 ];
 
-const resultsDiv = document.getElementById('results');
-const searchInput = document.getElementById('searchInput');
-const priceFilter = document.getElementById('priceFilter');
-const searchBtn = document.getElementById('searchBtn');
+let cart = JSON.parse(localStorage.getItem('laptopCart')) || [];
+
+function updateCartUI() {
+    document.getElementById('cartCount').innerText = cart.length;
+    localStorage.setItem('laptopCart', JSON.stringify(cart));
+}
+
+function addToCart(id) {
+    const item = laptops.find(l => l.id === id);
+    cart.push(item);
+    updateCartUI();
+    alert(`${item.brand} added to cart!`);
+}
 
 function displayLaptops(data) {
+    const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = data.map(lap => `
         <div class="card">
             <h3>${lap.brand} ${lap.model}</h3>
             <p class="price">$${lap.price}</p>
-            <a href="product.html?id=${lap.id}" class="view-btn">View Details →</a>
+            <button class="btn-add" onclick="addToCart(${lap.id})">Add to Cart</button>
+            <a href="product.html?id=${lap.id}" class="view-btn">View Details</a>
         </div>
     `).join('');
 }
 
 function filterData() {
-    const query = searchInput.value.toLowerCase();
-    const maxPrice = priceFilter;
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const maxPrice = document.getElementById('priceFilter').value;
 
     const filtered = laptops.filter(lap => {
         const matchesSearch = lap.brand.toLowerCase().includes(query);
         const matchesPrice = maxPrice === "all" || lap.price <= parseInt(maxPrice);
         return matchesSearch && matchesPrice;
     });
-
     displayLaptops(filtered);
 }
 
-searchBtn.addEventListener('click', filterData);
-priceFilter.addEventListener('change', filterData);
+document.getElementById('searchBtn').addEventListener('click', filterData);
+document.getElementById('priceFilter').addEventListener('change', filterData);
 
 // Initial Load
 displayLaptops(laptops);
+updateCartUI();
